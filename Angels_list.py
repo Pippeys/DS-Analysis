@@ -25,16 +25,10 @@ def oak(oak_data):
     return oak_list
 
 
-def write_sf_csv(sf_list):
-    raw_data = sf_list
-    df = pd.DataFrame(raw_data)
-    df.to_csv('sf_angels.csv')
-
-
-def write_oak_csv(oak_list):
-    raw_data = oak_list
-    df = pd.DataFrame(raw_data)
-    df.to_csv('oak_angels.csv')
+def write_angel_csv(oak_list, sf_list):
+    angel_list = sf_list + oak_list
+    df = pd.DataFrame(angel_list)
+    df.to_csv('angel_list.csv')
 
 
 def main():
@@ -46,8 +40,7 @@ def main():
     oak_data = oak_soup.find_all('div', class_='obitName')
     sf_list = san_fran(sf_data)
     oak_list = oak(oak_data)
-    write_sf_csv(sf_list)
-    write_oak_csv(oak_list)
+    write_angel_csv(oak_list, sf_list)
 
 
 if __name__ == '__main__':
