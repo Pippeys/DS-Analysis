@@ -5,13 +5,14 @@ import urllib.request
 import csv
 import lxml
 import pandas as pd
+import re
 
 
 def ala(ala_data):
     ala_list = []
     for div in ala_data:
         name = (div.text)
-        angel=[name]
+        angel = re.split('\n+',name)
         ala_list.append(angel)
     return ala_list
 
@@ -20,7 +21,7 @@ def berk(berk_data):
     berk_list = []
     for div in berk_data:
         name = (div.text)
-        angel=[name]
+        angel = re.split('\n+',name)
         berk_list.append(angel)
     return berk_list
 
@@ -29,7 +30,7 @@ def san_jose(sj_data):
     sj_list = []
     for div in sj_data:
         name = (div.text)
-        angel=[name]
+        angel = re.split('\n+',name)
         sj_list.append(angel)
     return sj_list
 
@@ -38,7 +39,7 @@ def san_fran(sf_data):
     sf_list = []
     for div in sf_data:
         name = (div.text)
-        angel=[name]
+        angel = re.split('\n+',name)
         sf_list.append(angel)
     return sf_list
 
@@ -47,13 +48,13 @@ def oak(oak_data):
     oak_list = []
     for div in oak_data:
         name = (div.text)
-        angel=[name]
+        angel = re.split('\n+',name)
         oak_list.append(angel)
     return oak_list
 
 
 def write_angel_csv(ala_list, berk_list, sj_data, sf_list, oak_list):
-    angel_list = sf_list + oak_list
+    angel_list = ala_list + berk_list + sj_data + sf_list + oak_list
     df = pd.DataFrame(angel_list)
     df.to_csv('angel_list.csv')
 
