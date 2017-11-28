@@ -10,6 +10,9 @@ import pandas as pd
 import numpy as np
 
 import time
+from random import randint
+
+
 
 
 def finder(places):
@@ -17,18 +20,18 @@ def finder(places):
     for x in places:
         CL_FS = CraigslistForSale(site = x, category = 'cta',
                         filters={
-                        'min_price': 5000,
-                        'max_price': 20000,
+                        'min_price': 2000,
+                        'max_price': 30000,
                         'make': 'toyota tacoma',
-                        'min_year': 2010,
+                        'min_year': 2000,
                         'max_year': 2017,
-                        'max_miles': 100000})
+                        'max_miles': 200000})
         x_list = []
 
         for x_result in CL_FS.get_results(sort_by='newest'):
             finder_list.append(x_result)
             print(x)
-            time.sleep(30)
+            time.sleep(randint(10,30))
 
     return finder_list
 
@@ -60,7 +63,7 @@ def scrape(urllist):
                 if status_result:
                     a = (status_result.group(2))
                     row[0]=a
-                    print('Found drive!')
+                    print('Found status!')
 
                 if dri_result:
                     a = (dri_result.group(2))
@@ -84,17 +87,17 @@ def scrape(urllist):
 
 
         print('Waiting...')
-        time.sleep(60)
+        time.sleep(randint(45,70))
 
     return biglist
 
 def main():
 #CraigslistForSale search and parse
-    places = ['sfbay','fresno','sacramento','stockton','bakersfield','losangeles','sandiego','portland','medford','seattle','reno','lasvegas','phoenix','tucson']
+    places = ['sfbay','fresno','sacramento','chico','merced','modesto','siskiyou','redding','stockton','visalia','hanford','bakersfield','slo','losangeles','palmsprings','sandiego','portland','southbend','medford','seattle','reno','lasvegas','phoenix','tucson']
     finder_list = finder(places)
 #Transforming into DataFrame
-    df = pd.DataFrame(cl_list)
-
+    df = pd.DataFrame(finder_list)
+    df.to_csv('C:/Users/Scott/Desktop/Data/Tacoma_Data/Tacoma_New.csv')
 #Load in Tacoma List without Odometer measurement
     del df ['geotag']
     urllist = df["url"].tolist()
@@ -103,7 +106,7 @@ def main():
     new_df = pd.DataFrame(biglist)
     new_df.columns = ['status','drive','condition','odometer']
     df = pd.concat([df,new_df], axis=1)
-    df.to_csv('C:/Users/Scott/Desktop/Data/Tacoma_New.csv')
+    df.to_csv('C:/Users/Scott/Desktop/Data/Tacoma_Data/Tacoma_New.csv')
     print('Done')
 
 if __name__ == '__main__':
