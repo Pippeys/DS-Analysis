@@ -1,4 +1,4 @@
-# Webber
+# Data Science Analysis
 This Repo holds all data science projects.
 
 NAI NorCal folder contains some BS4 web scrapping.
@@ -10,7 +10,11 @@ Tacoma Analysis folder contain all scripts involving a tacoma truck analysis.
 The Goal of this project is to find a sweet spot between all the variables and price.
   - Tacoma_Analysis.ipynb uses the .csv file to do analysis on the Tacomas'
   
-LibraryAnalysis.ipynb seeks to find classifications of library users.
+LibraryAnalysisExplore.ipynb seeks to find basic understanding of library users.
+  - Understand Attributes
   - Graphs
+  - Intial Hypothesis for Classification
+
+LibraryAnalysisPastYears.ipynb dives deeper to answer the business question of: "What segment classification can be seen with lost users."
   - K-Means Clustering
   - SVM Classification
