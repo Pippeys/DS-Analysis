@@ -10,11 +10,11 @@ Tacoma Analysis folder contain all scripts involving a tacoma truck analysis.
 The Goal of this project is to find a sweet spot between all the variables and price.
   - Tacoma_Analysis.ipynb uses the .csv file to do analysis on the Tacomas'
   
-LibraryAnalysisExplore.ipynb seeks to find basic understanding of library users.
+LibraryAnalysisExplore.ipynb seeks to find basic understanding of library patrons.
   - Understand Attributes
   - Graphs
   - Intial Hypothesis for Classification
 
-LibraryAnalysisPastYears.ipynb dives deeper to answer the business question of: "What segment classification can be seen with lost users."
+LibraryAnalysisPastYears.ipynb dives deeper to answer the business question of: "What segment classification can be seen with lost patrons."
   - K-Means Clustering
   - SVM Classification
