@@ -1,0 +1,779 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Finding a Quality Car\n",
+    "The goal of this program is to segment, visualize, and store quality cars for possible purchase. Data will be routinely taken from craigslist, wrangled, and set through some parameters. The resulting data set will hopefully only be valid matches that can be looked at in greater detail. \n",
+    "    \n",
+    "    Some of the wrangling problems that are expect to be faced are:\n",
+    "        \n",
+    "        - Duplicate records\n",
+    "        - Fake/spammy records\n",
+    "        - Poorly recorded records\n",
+    "        \n",
+    "        \n",
+    "     The parameters set are:\n",
+    "       \n",
+    "        - Price: $5,000 - $20,000\n",
+    "        - Miles: 0 - 100,000\n",
+    "        - Location: SF Bay Area, LA, Eugene, Portland, Fresno, Sacromento (will expand)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Loading data & modules"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/Users/magicsoccer10/anaconda/lib/python3.6/site-packages/sklearn/cross_validation.py:44: DeprecationWarning: This module was deprecated in version 0.18 in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.\n",
+      "  \"This module will be removed in 0.20.\", DeprecationWarning)\n"
+     ]
+    },
+    {
+     "ename": "FileNotFoundError",
+     "evalue": "File b'C:/Users/Scott/Desktop/Data/Tacoma_full_db_1.csv' does not exist",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mFileNotFoundError\u001b[0m                         Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-1-510934599d48>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     24\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     25\u001b[0m \u001b[0;31m#Loading dataset\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 26\u001b[0;31m \u001b[0mtrucks\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mpd\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mread_csv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'C:/Users/Scott/Desktop/Data/Tacoma_full_db_1.csv'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;32m/Users/magicsoccer10/anaconda/lib/python3.6/site-packages/pandas/io/parsers.py\u001b[0m in \u001b[0;36mparser_f\u001b[0;34m(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, squeeze, prefix, mangle_dupe_cols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, dayfirst, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, escapechar, comment, encoding, dialect, tupleize_cols, error_bad_lines, warn_bad_lines, skipfooter, skip_footer, doublequote, delim_whitespace, as_recarray, compact_ints, use_unsigned, low_memory, buffer_lines, memory_map, float_precision)\u001b[0m\n\u001b[1;32m    644\u001b[0m                     skip_blank_lines=skip_blank_lines)\n\u001b[1;32m    645\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 646\u001b[0;31m         \u001b[0;32mreturn\u001b[0m \u001b[0m_read\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfilepath_or_buffer\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mkwds\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    647\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    648\u001b[0m     \u001b[0mparser_f\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m__name__\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mname\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/Users/magicsoccer10/anaconda/lib/python3.6/site-packages/pandas/io/parsers.py\u001b[0m in \u001b[0;36m_read\u001b[0;34m(filepath_or_buffer, kwds)\u001b[0m\n\u001b[1;32m    387\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    388\u001b[0m     \u001b[0;31m# Create the parser.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 389\u001b[0;31m     \u001b[0mparser\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mTextFileReader\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfilepath_or_buffer\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwds\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    390\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    391\u001b[0m     \u001b[0;32mif\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0mnrows\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0mchunksize\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/Users/magicsoccer10/anaconda/lib/python3.6/site-packages/pandas/io/parsers.py\u001b[0m in \u001b[0;36m__init__\u001b[0;34m(self, f, engine, **kwds)\u001b[0m\n\u001b[1;32m    728\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0moptions\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'has_index_names'\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mkwds\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'has_index_names'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    729\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 730\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_make_engine\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mengine\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    731\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    732\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mclose\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/Users/magicsoccer10/anaconda/lib/python3.6/site-packages/pandas/io/parsers.py\u001b[0m in \u001b[0;36m_make_engine\u001b[0;34m(self, engine)\u001b[0m\n\u001b[1;32m    921\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0m_make_engine\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mengine\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m'c'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    922\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mengine\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0;34m'c'\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 923\u001b[0;31m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_engine\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mCParserWrapper\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mf\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0moptions\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    924\u001b[0m         \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    925\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0mengine\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0;34m'python'\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/Users/magicsoccer10/anaconda/lib/python3.6/site-packages/pandas/io/parsers.py\u001b[0m in \u001b[0;36m__init__\u001b[0;34m(self, src, **kwds)\u001b[0m\n\u001b[1;32m   1388\u001b[0m         \u001b[0mkwds\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'allow_leading_cols'\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mindex_col\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0;32mFalse\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1389\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1390\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_reader\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_parser\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mTextReader\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0msrc\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwds\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1391\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1392\u001b[0m         \u001b[0;31m# XXX\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32mpandas/parser.pyx\u001b[0m in \u001b[0;36mpandas.parser.TextReader.__cinit__ (pandas/parser.c:4184)\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;32mpandas/parser.pyx\u001b[0m in \u001b[0;36mpandas.parser.TextReader._setup_parser_source (pandas/parser.c:8449)\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;31mFileNotFoundError\u001b[0m: File b'C:/Users/Scott/Desktop/Data/Tacoma_full_db_1.csv' does not exist"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.figure.Figure at 0x10ca8e5c0>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "import re\n",
+    "import sklearn\n",
+    "from pylab import *\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import seaborn as sb\n",
+    "from scipy import stats\n",
+    "from sklearn import metrics\n",
+    "import matplotlib.pyplot as plt\n",
+    "from matplotlib import rcParams\n",
+    "from sklearn import linear_model\n",
+    "from sklearn import preprocessing\n",
+    "from sklearn.model_selection import KFold\n",
+    "from sklearn.preprocessing import LabelEncoder\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "from sklearn.cross_validation import cross_val_score, cross_val_predict\n",
+    "\n",
+    "\n",
+    "\n",
+    "%matplotlib inline\n",
+    "sb.set_style('whitegrid')\n",
+    "fig = plt.figure()\n",
+    "\n",
+    "\n",
+    "#Loading dataset\n",
+    "trucks = pd.read_csv('C:/Users/Scott/Desktop/Data/Tacoma_full_db_1.csv')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Cleaning\n",
+    "Here we need to remove:\n",
+    "    - irrelevant features\n",
+    "    - duplicate records\n",
+    "    - fake/spammy records\n",
+    "    - NULL records or columns\n",
+    "Also, we need to:\n",
+    "    - Parse important info from columns\n",
+    "    - Transform columns to their correct data type\n",
+    "    - Create new columns "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Removing irrelevant features"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "del trucks['has_image']\n",
+    "del trucks['has_map']"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Parsing important information\n",
+    "- Retrieving year from the name column by using RegEx to find '20' and 2 more digits.Importing year into new column.\n",
+    "- Retrieving location from URL column \n",
+    "- Removing the '$' from price to make it a numeric column"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Deriving location from CL URL"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "location = []\n",
+    "\n",
+    "locpattern = re.compile(r'://(.*).cr')\n",
+    "\n",
+    "for row in trucks.url:\n",
+    "    s = locpattern.search(row)\n",
+    "    \n",
+    "    if s is None:\n",
+    "        location.append(np.nan)\n",
+    "    else:\n",
+    "        location.append(s.group(1))\n",
+    "        \n",
+    "trucks['location'] = location"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Extracting year of make from CL header (name)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "year = []\n",
+    "\n",
+    "yearpattern = re.compile(r'\\b20\\d\\d\\b')\n",
+    "    \n",
+    "for row in trucks.name:\n",
+    "    s = yearpattern.search(row)\n",
+    "    if s is None:\n",
+    "        year.append(np.nan)\n",
+    "    else:\n",
+    "        year.append(s.group())\n",
+    "\n",
+    "trucks['year'] = year\n",
+    "\n",
+    "def remover(s):\n",
+    "    return int(s[1:])\n",
+    "trucks.price = [remover(s) for s in trucks.price]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Extracting only Tacomas from header"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "trx = []\n",
+    "\n",
+    "trxpattern = re.compile(r'tacoma|Tacoma')\n",
+    "    \n",
+    "for row in trucks.name:\n",
+    "    s = trxpattern.search(row)\n",
+    "    if s is None:\n",
+    "        trx.append(np.nan)\n",
+    "    else:\n",
+    "        trx.append(s.group())\n",
+    "\n",
+    "trucks['trx'] = trx\n",
+    "\n",
+    "trucks = trucks[trucks.trx.notnull()]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Transforming Columns"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "# price to a numeric\n",
+    "trucks['price'] = trucks['price'].astype(float)\n",
+    "#Transforming price from histo skew right\n",
+    "k = max(trucks.price) + 1 - trucks.price\n",
+    "trucks['trans_price'] = np.sqrt(k)\n",
+    "#Transforming odometer from histo skew right\n",
+    "k = max(trucks.odometer) + 1 - trucks.odometer\n",
+    "trucks['trans_odometer'] = np.sqrt(k)\n",
+    "#id to a string\n",
+    "trucks ['id'] = trucks.id.astype('str')\n",
+    "# datetime from object to datetime type\n",
+    "trucks.datetime = pd.to_datetime(trucks.datetime)\n",
+    "#Removing time and creating a new column for date\n",
+    "trucks['date'] = trucks['datetime'].dt.date\n",
+    "#Setting numeric precision to zero decimals\n",
+    "pd.set_option('precision',0)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Removing duplicate records\n",
+    "I can assume that if the price and odometer measurements are the same then the records are probably the duplicates."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "print(len(trucks))\n",
+    "trucks = trucks.drop_duplicates(subset = ['price','odometer'])\n",
+    "print(len(trucks))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "There is still alot of wrangling that can be done to clean the data, but for now I will go forward.\n",
+    "- to do:\n",
+    "    - delete fake/spammy\n",
+    "    - Null values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "trucks.name.head(100)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Exploration"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Is  trucks['drive'] important?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": false
+   },
+   "outputs": [],
+   "source": [
+    "price_and_miles_by_drive = pd.DataFrame((trucks.ix[:,(3,7,9)].values), columns = ['Price','Drive','Odometer'])\n",
+    "price_and_miles_by_drive.Price = price_and_miles_by_drive.Price.astype(int)\n",
+    "price_and_miles_by_drive.Odometer = price_and_miles_by_drive.Odometer.astype(float)\n",
+    "sb.pairplot(price_and_miles_by_drive, hue = 'Drive', palette = 'hls')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "rcParams['figure.figsize'] = 15,10\n",
+    "fig, ax=plt.subplots(1,2)\n",
+    "print(price_and_miles_by_drive.dtypes)\n",
+    "sb.violinplot(x='Drive',y='Odometer',data= price_and_miles_by_drive, ax=ax[0])\n",
+    "sb.violinplot(x='Drive',y='Price',data= price_and_miles_by_drive, ax=ax[1])\n",
+    "fig.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Looking at the spread of the drive type against the mileage and pricing\n",
+    "- We see there are very few '4wd', and they are considerably more expensive (> $15,000)\n",
+    "- 'fwd' & 'rwd' both have spreads that might be worth looking into"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "group_loc = trucks.groupby('location')\n",
+    "print('Location        Means')\n",
+    "print(group_loc.price.mean())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": false
+   },
+   "outputs": [],
+   "source": [
+    "print('             Count')\n",
+    "group_loc.id.count()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "trucks.location = trucks.location.loc[trucks.location != 'portland.craigslist.org/wsc/ctd/d/2015-toyota-tacoma']\n",
+    "trucks.location = trucks.location.loc[trucks.location != 'lasvegas.craigslist.org/cto/d/2013-toyota-tacoma']"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "First graph will show locations with more than 5 trucks for sale"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": false
+   },
+   "outputs": [],
+   "source": [
+    "pml = pd.DataFrame((trucks.ix[:,(3,5,9)].values), columns = ['price','location','odometer'])\n",
+    "pml.price = pml.price.astype(int)\n",
+    "pml.odometer = pml.odometer.astype(float)\n",
+    "\n",
+    "locations = pml.location.unique()\n",
+    "counter = pml.groupby(pml.location)\n",
+    "counter = counter.price.count()\n",
+    "\n",
+    "digits = []\n",
+    "x = 0\n",
+    "\n",
+    "for i in counter:\n",
+    "    if i < 20:\n",
+    "        digits.append(counter.index[x])\n",
+    "    x = x + 1\n",
+    "x = 0\n",
+    "\n",
+    "for i in digits:\n",
+    "    pml.location = pml.location.loc[pml.location != digits[x]]\n",
+    "    if x <= len(digits):\n",
+    "        x = x + 1\n",
+    "    print(i)\n",
+    "sb.pairplot(pml, hue = 'location', palette = 'hls')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": false
+   },
+   "outputs": [],
+   "source": [
+    "pml = pd.DataFrame((trucks.ix[:,(3,5,9)].values), columns = ['price','location','odometer'])\n",
+    "pml.price = pml.price.astype(int)\n",
+    "pml.odometer = pml.odometer.astype(float)\n",
+    "\n",
+    "locations = pml.location.unique()\n",
+    "counter = pml.groupby(pml.location)\n",
+    "counter = counter.price.count()\n",
+    "\n",
+    "digits = []\n",
+    "x = 0\n",
+    "\n",
+    "for i in counter:\n",
+    "    if i >= 20:\n",
+    "        digits.append(counter.index[x])\n",
+    "    x = x + 1\n",
+    "x = 0\n",
+    "\n",
+    "for i in digits:\n",
+    "    pml.location = pml.location.loc[pml.location != digits[x]]\n",
+    "    if x <= len(digits):\n",
+    "        x = x + 1\n",
+    "    print(i)\n",
+    "sb.pairplot(pml, hue = 'location', palette = 'hls')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Graph mean price vs count\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Classify Drive with Naive Bayes"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "print(trucks.isnull().sum())\n",
+    "trucks = trucks[trucks.drive.notnull()] \n",
+    "trucks = trucks[trucks.year.notnull()]\n",
+    "print('___________________')\n",
+    "print(trucks.isnull().sum())\n",
+    "print('___________________')\n",
+    "print(len(trucks))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "scrolled": false
+   },
+   "outputs": [],
+   "source": [
+    "df = trucks\n",
+    "num = LabelEncoder()\n",
+    "df['bin_status'] = num.fit_transform(df['status'].astype('str'))\n",
+    "df['bin_drive'] = num.fit_transform(df['drive'].astype('str'))\n",
+    "df['bin_condition'] = num.fit_transform(df['condition'].astype('str'))\n",
+    "df['bin_location'] = num.fit_transform(df['location'].astype('str'))\n",
+    "df['bin_year'] = num.fit_transform(df['year'].astype('str'))\n",
+    "\n",
+    "dummy1 = pd.get_dummies(trucks.drive)\n",
+    "dummy2 = pd.get_dummies(trucks.location)\n",
+    "cols_to_keep = ['trans_price','trans_odometer','year']\n",
+    "df = trucks[cols_to_keep].join(dummy1.iloc[:,:])\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "sb.distplot(df.trans_price, bins = 15)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": false
+   },
+   "outputs": [],
+   "source": [
+    "x = df.trans_odometer\n",
+    "sb.distplot(x, bins=15)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "sb.distplot(trucks.year.astype(int))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": false
+   },
+   "outputs": [],
+   "source": [
+    "corr = df.corr()\n",
+    "sb.heatmap(corr, xticklabels=corr.columns.values, yticklabels=corr.columns.values)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "dummy = pd.get_dummies(trucks.drive)\n",
+    "cols_to_keep = ['trans_price','trans_odometer','year']\n",
+    "data = trucks[cols_to_keep].join(dummy.iloc[:,:])\n",
+    "data['year'] = data.year.astype(int)\n",
+    "data.head(7)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "y = data.trans_price\n",
+    "x = data.iloc[:,1:]\n",
+    "x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.25)\n",
+    "print(x_train.shape, y_train.shape)\n",
+    "print(x_test.shape,y_test.shape)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Neural Network"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "from sklearn.neural_network import MLPRegressor as MLP\n",
+    "nn = MLP(hidden_layer_sizes=(100,),activation='relu',solver='lbfgs',alpha=0.05,batch_size='auto',\n",
+    "               learning_rate='constant', learning_rate_init=0.01, power_t=0.5, max_iter=1000, shuffle=True,\n",
+    "               random_state=None, tol=0.0001, verbose=False, warm_start=False, momentum=0.9,\n",
+    "               nesterovs_momentum=True, early_stopping=False, validation_fraction=0.1, beta_1=0.9, beta_2=0.999,\n",
+    "               epsilon=1e-08)\n",
+    "nn.fit(x_train,y_train)\n",
+    "\n",
+    "y_hat = nn.predict(x_test)\n",
+    "\n",
+    "fig = plt.figure()\n",
+    "ax1 = fig.add_subplot(111)\n",
+    "ax1.scatter(y_test, y_test, s=10, c='b', marker=\"s\", label='real')\n",
+    "ax1.scatter(y_test,y_hat, s=10, c='r', marker=\"s\", label='NN Prediction')\n",
+    "ax1.legend(loc=\"best\")\n",
+    "plt.show()\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Linear Regression Model"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true,
+    "scrolled": false
+   },
+   "outputs": [],
+   "source": [
+    "import statsmodels.api as sm\n",
+    "olsmod = sm.OLS(y,x)\n",
+    "olsres = olsmod.fit()\n",
+    "x1n = np.linspace(20.5,25, 10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false,
+    "scrolled": false
+   },
+   "outputs": [],
+   "source": [
+    "lm = linear_model.LinearRegression()\n",
+    "model = lm.fit(x_train, y_train)\n",
+    "predictions = lm.predict(x_test)\n",
+    "sb.regplot(y_test, predictions)\n",
+    "plt.xlabel('True Values')\n",
+    "plt.ylabel('Predictions')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "print('R-Square Score: ',model.score(x_test,y_test))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "predicted = cross_val_predict(lm, x, y, cv=4)\n",
+    "print('R-Squared Score: ',metrics.r2_score(y, predicted))\n",
+    "\n",
+    "sb.regplot(y, predicted)\n",
+    "plt.xlabel('True Values')\n",
+    "plt.ylabel('Predictions')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Extract and Save"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "good_trucks = trucks.loc[trucks['price'] > 5000]\n",
+    "good_trucks = good_trucks.loc[good_trucks['odometer'] > 1000]\n",
+    "quality_trucks = good_trucks.loc[good_trucks['price'] < 15000]\n",
+    "quality_trucks = quality_trucks.loc[quality_trucks['odometer'] < 75000]\n",
+    "print('Number of Quality Trucks')\n",
+    "print(len(quality_trucks))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "test = pd.read_csv('C')"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
